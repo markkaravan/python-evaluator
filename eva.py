@@ -29,6 +29,35 @@ class Eva():
         if exp[0] == '/':
             return self.eval(exp[1], env) / self.eval(exp[2], env);
 
+        # Comparisons
+        if exp[0] == '=':
+            return self.eval(exp[1], env) == self.eval(exp[2], env);
+
+        if exp[0] == '<>':
+            return self.eval(exp[1], env) != self.eval(exp[2], env);
+
+        if exp[0] == '<=':
+            return self.eval(exp[1], env) <= self.eval(exp[2], env);
+
+        if exp[0] == '>=':
+            return self.eval(exp[1], env) >= self.eval(exp[2], env);
+
+        if exp[0] == '<':
+            return self.eval(exp[1], env) < self.eval(exp[2], env);
+
+        if exp[0] == '>':
+            return self.eval(exp[1], env) > self.eval(exp[2], env);
+
+        # Logical
+        if exp[0] == 'and':
+            return self.eval(exp[1], env) and self.eval(exp[2], env);
+
+        if exp[0] == 'or':
+            return self.eval(exp[1], env) or self.eval(exp[2], env);
+
+        if exp[0] == 'not':
+            return not self.eval(exp[1], env);
+
         # Blocks
         if exp[0] == 'begin':
             blockEnv = Environment({}, env);
@@ -37,10 +66,30 @@ class Eva():
                 result = self.eval(expression, blockEnv)
             return result
 
+        # If statements
+        if exp[0] == 'if':
+            [_if, condition, consequent, alternative] = exp
+            if self.eval(condition, env):
+                return self.eval(consequent, env)
+            else:
+                return self.eval(alternative, env)
+
+        # While statement
+        if exp[0] == 'while':
+            [_if, condition, body] = exp
+            result = None
+            while self.eval(condition, env):
+                result = self.eval(body, env)
+            return result
+
         # Variables
         if exp[0] == 'var':
             [_, name, value] = exp
-            return env.define(name, value)
+            return env.define(name, self.eval(value, env))
+
+        if exp[0] == 'set':
+            [_, name, value] = exp
+            return env.assign(name, self.eval(value, env))
 
 
 

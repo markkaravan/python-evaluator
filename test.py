@@ -124,6 +124,181 @@ expressions = [
         """,
         7.0
     ),
+
+    (
+        """
+        (= 1 1)
+        """,
+        True
+    ),
+
+    (
+        """
+        (<> 1 1)
+        """,
+        False
+    ),
+
+    (
+        """
+        (<= 1 1)
+        """,
+        True
+    ),
+
+    (
+        """
+        (>= 1 1)
+        """,
+        True
+    ),
+
+    (
+        """
+        (< 1 1)
+        """,
+        False
+    ),
+
+    (
+        """
+        (> 1 1)
+        """,
+        False
+    ),
+
+    (
+        """
+        (< 1 2)
+        """,
+        True
+    ),
+
+    (
+        """
+        (> 2 1)
+        """,
+        True
+    ),
+
+    (
+        """
+        (and (= 1 1) (<> 1 2))
+        """,
+        True
+    ),
+
+    (
+        """
+        (or (= 1 1) (<> 1 1))
+        """,
+        True
+    ),
+
+    (
+        """
+        (not (= 1 1))
+        """,
+        False
+    ),
+
+    (
+        """
+        (if
+            (= 1 1)
+            "One"
+            "None"
+        )
+        """,
+        '"One"'
+    ),
+
+    (
+        """
+        (if
+            (<> 1 1)
+            "One"
+            "None"
+        )
+        """,
+        '"None"'
+    ),
+
+    (
+        """
+        (var foo 1)
+        (set foo 2)
+        """,
+        2
+    ),
+
+    (
+        """
+        (var foo 1)
+        (set foo 2)
+        foo
+        """,
+        2
+    ),
+
+    (
+        """
+        (var foo 1)
+        (begin
+            (set foo 2)
+        )
+        foo
+        """,
+        2
+    ),
+
+    (
+        """
+        (var foo 1)
+        (begin
+            (set foo 2)
+            foo
+        )
+        """,
+        2
+    ),
+
+    (
+        """
+        (var foo 1)
+        (begin
+            (begin
+                (set foo 2)
+            )
+        )
+        foo
+        """,
+        2
+    ),
+
+    (
+        """
+        (var counter 10)
+        (> counter 0)
+        """,
+        True
+    ),
+
+    (
+        """
+        (var counter 10)
+        (var total 0)
+        (while
+            (> counter 0)
+            (begin
+                (set total (+ total 1))
+                (set counter (- counter 1))
+            )
+        )
+        total
+        """,
+        10
+    ),
 ]
 
 
@@ -136,11 +311,13 @@ parser = Parser()
 
 for (actual, expected) in expressions:
     ast = parser.parse(actual)
-    if eva.eval(ast, globalEnv) == expected:
+    value = eva.eval(ast, globalEnv)
+    if value == expected:
         continue
     else:
         print("fail")
         print("Actual: ", actual)
+        print("Value: ", value)
         print("Expected: ", expected)
         break
 else:

@@ -8,13 +8,16 @@ class Environment():
         return value
 
     def assign(self, name, value):
-        pass
+        self.__resolve(name).record[name] = value
+        return value
 
     def lookup(self, name):
-        # return self.record[name]
+        return self.__resolve(name).record[name]
+
+    def __resolve(self, name):
         if name in self.record:
-            return self.record[name]
+            return self
         elif self.parent is None:
             raise KeyError('Cannot find variable name: ', name);
         else:
-            return self.parent.lookup(name)
+            return self.parent.__resolve(name)

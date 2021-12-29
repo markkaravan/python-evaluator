@@ -91,7 +91,23 @@ class Eva():
             [_, name, value] = exp
             return env.assign(name, self.eval(value, env))
 
+        # Functions
+        if exp[0] == 'lambda':
+            [_, params, body] = exp;
+            return { 'params': params, 'body': body, 'env': env }
 
+        if isinstance(exp, list):
+            fn = self.eval(exp[0], env)
+            args = [self.eval(arg, env) for arg in exp[1:]]
+            # Global scope
+            if callable(fn):
+                return fn(*args)
+            elif isinstance(fn, dict):
+                activationRecord = {}
+                for (i, param) in enumerate(fn['params']):
+                    activationRecord[param] = args[i]
+                activationEnvironment = Environment(activationRecord, env)
+                return self.eval(fn['body'], activationEnvironment)
 
         # reached the bottom of eval
         raise ValueError('expression not found: ', exp);

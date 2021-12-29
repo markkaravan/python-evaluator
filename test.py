@@ -299,12 +299,58 @@ expressions = [
         """,
         10
     ),
+
+    (
+        """
+        (square 3)
+        """,
+        9
+    ),
+
+    (
+        """
+        (sum 1 2)
+        """,
+        3
+    ),
+
+    (
+        """
+        (sum (square 2) (square 3))
+        """,
+        13
+    ),
+
+    (
+        """
+        (var product (lambda (a b) (* a b )))
+        (product 4 5)
+        """,
+        20
+    ),
+
+    (
+        """
+        ((lambda (a b) (* a b )) 3 4)
+        """,
+        12
+    ),
+
 ]
 
+def square(x):
+    return x * x
 
+def sum(a, b):
+    return a + b
 
 globalEnv = Environment({
     'version': 1.0,
+
+    'square': square,
+
+    'sum': sum
+
 }, None);
 
 parser = Parser()

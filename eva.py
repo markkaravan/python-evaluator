@@ -1,3 +1,5 @@
+import re
+
 from environment import Environment
 
 class Eva():
@@ -10,6 +12,9 @@ class Eva():
 
         if self._isString(exp, env):
             return exp
+
+        if self._isSymbol(exp, env):
+            return env.record[exp]
 
         # Basic math
         if exp[0] == '+':
@@ -39,4 +44,10 @@ class Eva():
         return type(exp) in [int, float]
 
     def _isString(self, exp, env):
+        if type(exp) != str:
+            return False
+        pattern = '^\"(.*?)\"$'
+        return re.match(pattern, exp)
+
+    def _isSymbol(self, exp, env):
         return type(exp) in [str]

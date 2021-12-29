@@ -1,36 +1,38 @@
 from eva import Eva
 from environment import Environment
+from parser import Parser
 
 eva = Eva();
 
 expressions = [
     (
-        "String",
-        "String"
+        '"Foo"',
+        '"Foo"'
     ),
 
     (
-        35,
+        '35',
         35
     ),
 
     (
-        ['+', 1, 2],
+        '(+ 1 2)',
         3
     ),
 
+
     (
-        ['*', 2, 3],
+        '(* 2 3)',
         6
     ),
 
     (
-        ['+', ['*', 3, 3], ['*', 4, 4]],
+        '(+ (* 3 3) (* 4 4))',
         25
     ),
 
     (
-        ['var', 'x', 10],
+        '(var x 10)',
         10
     ),
 
@@ -40,12 +42,17 @@ expressions = [
     ),
 ]
 
+
+
 globalEnv = Environment({
     'version': 1.0,
 }, None);
 
+parser = Parser()
+
 for (actual, expected) in expressions:
-    if eva.eval(actual, globalEnv) == expected:
+    ast = parser.parse(actual)
+    if eva.eval(ast, globalEnv) == expected:
         continue
     else:
         print("fail")

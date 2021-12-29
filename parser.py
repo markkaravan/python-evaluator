@@ -1,6 +1,6 @@
 class Parser():
     def __init__(self):
-        print("Initializing parser")
+        pass
 
     def parse(self, input):
         tokens = self.tokenize(input)
@@ -25,18 +25,20 @@ class Parser():
                 stack.append(branch)
             elif token.isnumeric():
                 stack.append(float(token))
-            else:
+            elif type(token) == str and token[0] == '"' and token[-1] == '"':
                 stack.append(token)
-        return stack
+            elif type(token) == str:
+                stack.append(token)
+        return stack[0]
 
 
-p = Parser()
-expressions = [
-    '(   "hello"      )',
-    '42',
-    '(+ 2 3)',
-    '(var foo (+ 2 (* 3 4)))',
-]
-
-for exp in expressions:
-    print(p.parse(exp))
+# p = Parser()
+# expressions = [
+#     '(   "hello"      )',
+#     '42',
+#     '(+ 2 3)',
+#     '(var foo (+ 2 (* 3 4)))',
+# ]
+#
+# for exp in expressions:
+#     print(p.parse(exp))

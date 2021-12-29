@@ -3,13 +3,14 @@ class Parser():
         pass
 
     def parse(self, input):
-        tokens = self.tokenize(input)
+        addBegin = '(begin ' + input + ')'
+        tokens = self.tokenize(addBegin)
         ast = self.generateAst(tokens)
         return ast
 
     def tokenize(self, s):
-        tokens = s.replace('(', ' ( ').replace(')', ' ) ').split(' ')
-        cleaned = [t for t in tokens if t != '']
+        tokens = s.replace('(', ' ( ').replace(')', ' ) ').replace('\n', ' \n ').split(' ')
+        cleaned = [t for t in tokens if t not in ['', '\n']]
         return cleaned
 
     def generateAst(self, tokens):

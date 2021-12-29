@@ -11,4 +11,10 @@ class Environment():
         pass
 
     def lookup(self, name):
-        pass
+        # return self.record[name]
+        if name in self.record:
+            return self.record[name]
+        elif self.parent is None:
+            raise KeyError('Cannot find variable name: ', name);
+        else:
+            return self.parent.lookup(name)

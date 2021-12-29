@@ -14,7 +14,7 @@ class Eva():
             return exp
 
         if self._isSymbol(exp, env):
-            return env.record[exp]
+            return env.lookup(exp)
 
         # Basic math
         if exp[0] == '+':
@@ -28,6 +28,14 @@ class Eva():
 
         if exp[0] == '/':
             return self.eval(exp[1], env) / self.eval(exp[2], env);
+
+        # Blocks
+        if exp[0] == 'begin':
+            blockEnv = Environment({}, env);
+            result = None
+            for expression in exp[1:]:
+                result = self.eval(expression, blockEnv)
+            return result
 
         # Variables
         if exp[0] == 'var':

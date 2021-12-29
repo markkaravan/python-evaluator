@@ -31,15 +31,3 @@ class Parser():
             elif type(token) == str:
                 stack.append(token)
         return stack[0]
-
-
-# p = Parser()
-# expressions = [
-#     '(   "hello"      )',
-#     '42',
-#     '(+ 2 3)',
-#     '(var foo (+ 2 (* 3 4)))',
-# ]
-#
-# for exp in expressions:
-#     print(p.parse(exp))

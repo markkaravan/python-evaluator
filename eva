@@ -1,0 +1,33 @@
+#!/usr/bin/env python3
+
+import sys
+from eva import Eva
+
+mode = sys.argv[1]
+
+if not mode or mode not in ['-e', '-f']:
+    print("""
+    Usage:
+
+    direct expressions:
+    -e '(+ 1 2)'
+
+    from file:
+    -f files/hello.eva
+    """)
+    sys.exit()
+
+if mode == '-e':
+    expression = sys.argv[2]
+    eva = Eva()
+    result = eva.evalNew(expression)
+    print(result)
+
+if mode == '-f':
+    file = sys.argv[2]
+    f = open(file, 'r')
+    file_contents = f.read()
+    eva = Eva()
+    result = eva.evalNew(file_contents)
+    print(result)
+    f.close()

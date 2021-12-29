@@ -1,12 +1,29 @@
 import re
 
 from environment import Environment
+from parser import Parser
 from transformer import Transformer
+
+parser = Parser()
 transformer = Transformer()
 
 class Eva():
     def __init__(self):
         pass
+
+    def evalNew(self, input):
+        def square(x):
+            return x * x
+
+        def sum(a, b):
+            return a + b
+        ast = parser.parse(input)
+        globalEnv = Environment({
+            'version': 1.0,
+            'square': square,
+            'sum': sum
+        }, None);
+        return self.eval(ast, globalEnv)
 
     def eval(self, exp, env):
         if self._isNumber(exp, env):
@@ -59,6 +76,11 @@ class Eva():
 
         if exp[0] == 'not':
             return not self.eval(exp[1], env);
+
+        if exp[0] == 'print':
+            res = self.eval(exp[1], env)
+            print(res)
+            return res
 
         # Blocks
         if exp[0] == 'begin':

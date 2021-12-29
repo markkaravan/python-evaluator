@@ -1,25 +1,42 @@
+from environment import Environment
+
 class Eva():
     def __init__(self):
-        print("will have stuff soon")
+        pass
 
-    def eval(self, exp):
-        if self._isNumber(exp):
+    def eval(self, exp, env):
+        if self._isNumber(exp, env):
             return exp
 
-        if self._isString(exp):
+        if self._isString(exp, env):
             return exp
 
+        # Basic math
         if exp[0] == '+':
-            return self.eval(exp[1]) + self.eval(exp[2]);
+            return self.eval(exp[1], env) + self.eval(exp[2], env);
+
+        if exp[0] == '-':
+            return self.eval(exp[1], env) - self.eval(exp[2], env);
 
         if exp[0] == '*':
-            return self.eval(exp[1]) * self.eval(exp[2]);
+            return self.eval(exp[1], env) * self.eval(exp[2], env);
+
+        if exp[0] == '/':
+            return self.eval(exp[1], env) / self.eval(exp[2], env);
+
+        # Variables
+        if exp[0] == 'var':
+            [_, name, value] = exp
+            return env.define(name, value)
+
+
 
         # reached the bottom of eval
-        return "No such luck"
+        raise ValueError('expression not found: ', exp);
 
-    def _isNumber(self, exp):
+
+    def _isNumber(self, exp, env):
         return type(exp) in [int, float]
 
-    def _isString(self, exp):
+    def _isString(self, exp, env):
         return type(exp) in [str]

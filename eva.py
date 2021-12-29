@@ -1,6 +1,8 @@
 import re
 
 from environment import Environment
+from transformer import Transformer
+transformer = Transformer()
 
 class Eva():
     def __init__(self):
@@ -95,6 +97,10 @@ class Eva():
         if exp[0] == 'lambda':
             [_, params, body] = exp;
             return { 'params': params, 'body': body, 'env': env }
+
+        if exp[0] == 'def':
+            varExp = transformer.transformDefToLambda(exp)
+            return self.eval(varExp, env);
 
         if isinstance(exp, list):
             fn = self.eval(exp[0], env)

@@ -336,6 +336,27 @@ expressions = [
         12
     ),
 
+    (
+        """
+        (def product (a b) (* a b))
+        (product 5 6)
+        """,
+        30
+    ),
+
+    (
+        """
+        (def factorial (x)
+            (if (= x 1)
+                x
+                (* x (factorial (- x 1)))
+            )
+        )
+        (factorial 5)
+        """,
+        120
+    ),
+
 ]
 
 def square(x):

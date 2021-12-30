@@ -4,12 +4,14 @@ from environment import Environment
 from parser import Parser
 from transformer import Transformer
 
-parser = Parser()
-transformer = Transformer()
-
 class Eva():
-    def __init__(self):
-        pass
+    def __init__(self, globalEnv=None):
+        self.globalEnv = globalEnv
+        self.parser = Parser()
+        self.transformer = Transformer()
+
+    def evaluate(self, ast):
+        return self.eval(ast, self.globalEnv)
 
     def evalNew(self, input):
         def square(x):
@@ -17,7 +19,7 @@ class Eva():
 
         def sum(a, b):
             return a + b
-        ast = parser.parse(input)
+        ast = self.parser.parse(input)
         globalEnv = Environment({
             'version': 1.0,
             'square': square,
@@ -139,12 +141,14 @@ class Eva():
 
         if exp[0] == 'import':
             [_, name] = exp
-            f = open("modules/" + name, 'r')
+            f = open("modules/" + name + ".eva", 'r')
             file_contents = f.read()
-            eva = Eva()
-            result = eva.evalNew("(module " + name + file_contents + ")")
-            print(result)
+            input = file_contents
+            moduleName = name
+            ast = self.parser.parse(input, moduleName)
+            result = self.eval(ast, self.globalEnv)
             f.close()
+            return moduleName
 
 
         # Functions
@@ -153,7 +157,7 @@ class Eva():
             return { 'params': params, 'body': body, 'env': env }
 
         if exp[0] == 'def':
-            varExp = transformer.transformDefToLambda(exp)
+            varExp = self.transformer.transformDefToLambda(exp)
             return self.eval(varExp, env);
 
         if isinstance(exp, list):

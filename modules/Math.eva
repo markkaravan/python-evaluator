@@ -6,4 +6,8 @@
   (* x x)
 )
 
+(def cube (x)
+  (* x (* x x))
+)
+
 (var MAX_VALUE 1000)

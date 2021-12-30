@@ -2,8 +2,6 @@ from eva import Eva
 from environment import Environment
 from parser import Parser
 
-eva = Eva();
-
 expressions = [
     (
         """
@@ -390,14 +388,21 @@ expressions = [
         10
     ),
 
-    # (
-    #     """
-    # (import Math)
-    #
-    # (abs (square (- 10 20))
-    #     """,
-    #     100
-    # ),
+    (
+        """
+        (import Math)
+        """,
+        'Math'
+    ),
+
+    (
+        """
+        (import Math)
+        ((prop Math cube) 3)
+
+        """,
+        27
+    ),
 
 ]
 
@@ -420,7 +425,8 @@ parser = Parser()
 
 for (actual, expected) in expressions:
     ast = parser.parse(actual)
-    value = eva.eval(ast, globalEnv)
+    eva = Eva(globalEnv);
+    value = eva.evaluate(ast)
     if value == expected:
         continue
     else:

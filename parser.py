@@ -2,9 +2,13 @@ class Parser():
     def __init__(self):
         pass
 
-    def parse(self, input):
-        addBegin = '(begin ' + input + ')'
-        spaced = addBegin.replace('(', ' ( ').replace(')', ' ) ').replace('\n', ' \n ')
+    def parse(self, input, moduleName=None):
+        wrapper = None
+        if moduleName is not None:
+            wrapper = '(module ' + moduleName + ' ' + input + ')'
+        else:
+            wrapper = '(begin ' + input + ')'
+        spaced = wrapper.replace('(', ' ( ').replace(')', ' ) ').replace('\n', ' \n ')
         tokens = self.tokenize(spaced)
         ast = self.generateAst(tokens)
         return ast

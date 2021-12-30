@@ -357,6 +357,13 @@ expressions = [
         120
     ),
 
+    (
+        """
+        (+ "Hello " "world")
+        """,
+        '"Hello world"'
+    ),
+
 ]
 
 def square(x):

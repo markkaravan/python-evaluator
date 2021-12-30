@@ -1,1 +1,5 @@
-(+ (* 1 2) (* 4 5))
+(begin
+  (def sq (x) (* x x))
+  (def sum (a b) (+ a b))
+  (sum (sq 3) (sq 4))
+)

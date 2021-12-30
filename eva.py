@@ -37,6 +37,11 @@ class Eva():
 
         # Basic math
         if exp[0] == '+':
+            # concatenation
+            if self._isString(exp[1], env) and self._isString(exp[1], env):
+                a = exp[1].strip('\"')
+                b = exp[2].strip('\"')
+                return '"' + (a + b) + '"'
             return self.eval(exp[1], env) + self.eval(exp[2], env);
 
         if exp[0] == '-':

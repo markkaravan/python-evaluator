@@ -404,28 +404,181 @@ expressions = [
         27
     ),
 
+    (
+        """
+        (var foo (cons 1 2))
+        (car foo)
+        """,
+        1
+    ),
+
+    (
+        """
+        (var foo (cons 1 2))
+        (cdr foo)
+        """,
+        2
+    ),
+
+    (
+        """
+        (var list (cons 1 (cons 2 (cons 3 (cons 4 nil)))))
+        (car list)
+        """,
+        1
+    ),
+
+    (
+        """
+        (var list (cons 1 (cons 2 (cons 3 (cons 4 nil)))))
+        (car (cdr (cdr list)))
+        """,
+        3
+    ),
+
+
+    (
+        """
+        (var list (cons 1 (cons 2 (cons 3 (cons 4 nil)))))
+        (car (cdr (cdr list)))
+        """,
+        3
+    ),
+
+    (
+        """
+        (def build-range (start end)
+            (if (> start end)
+                nil
+                (cons start (build-range (+ start 1) end))
+            )
+        )
+        (var my-list (build-range 1 5))
+        (car my-list)
+
+        """,
+        1
+    ),
+
+    (
+        """
+        (import Math)
+        (def build-range (start end)
+            (if (> start end)
+                nil
+                (cons start (build-range ((prop Math inc) start) end))
+            )
+        )
+        (var my-list (build-range 1 5))
+        (car my-list)
+
+        """,
+        1
+    ),
+
+    (
+        """
+        (def build-range (start end)
+            (if (> start end)
+                nil
+                (cons start (build-range ((prop Math inc) start) end))
+            )
+        )
+        (var my-list (build-range 10 20))
+
+        (def get-nth (n list)
+            (if (= n 0)
+                (car list)
+                (get-nth (- n 1) (cdr list))
+            )
+        )
+
+        (get-nth 5 my-list)
+        """,
+        15
+    ),
+
+    (
+        """
+        (def build-range (start end)
+            (if (> start end)
+                nil
+                (cons start (build-range ((prop Math inc) start) end))
+            )
+        )
+        (var my-list (build-range 1 20))
+
+        (def length-inner (list index)
+            (if (= (cdr list) nil)
+                index
+                (length-inner (cdr list) (+ index 1))
+            )
+        )
+
+        (length-inner my-list 1)
+        """,
+        20
+    ),
+
+    (
+        """
+        (def build-range (start end)
+            (if (> start end)
+                nil
+                (cons start (build-range ((prop Math inc) start) end))
+            )
+        )
+        (var my-list (build-range 1 20))
+
+        (def length-inner (list index)
+            (if (= (cdr list) nil)
+                index
+                (length-inner (cdr list) (+ index 1))
+            )
+        )
+
+        (def length (list) (length-inner list 1))
+
+        (length my-list)
+        """,
+        20
+    ),
+
+    (
+        """
+        (def build-range (start end)
+            (if (> start end)
+                nil
+                (cons start (build-range ((prop Math inc) start) end))
+            )
+        )
+        (var my-list (build-range 1 20))
+
+        (def length (list)
+            (begin
+                (def length-inner (list index)
+                    (if (= (cdr list) nil)
+                        index
+                        (length-inner (cdr list) (+ index 1))
+                    )
+                )
+                (length-inner list 1)
+            )
+        )
+
+        (length my-list)
+        """,
+        20
+    ),
+
+
 ]
-
-def square(x):
-    return x * x
-
-def sum(a, b):
-    return a + b
-
-globalEnv = Environment({
-    'version': 1.0,
-
-    'square': square,
-
-    'sum': sum
-
-}, None);
 
 parser = Parser()
 
 for (actual, expected) in expressions:
     ast = parser.parse(actual)
-    eva = Eva(globalEnv);
+    eva = Eva();
     value = eva.evaluate(ast)
     if value == expected:
         continue

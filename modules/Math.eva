@@ -10,4 +10,8 @@
   (* x (* x x))
 )
 
+(def inc (x)
+  (set x (+ x 1))
+)
+
 (var MAX_VALUE 1000)

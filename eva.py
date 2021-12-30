@@ -4,8 +4,19 @@ from environment import Environment
 from parser import Parser
 from transformer import Transformer
 
+GLOBAL_ENVIRONMENT = Environment(
+    {
+        'version': 1.0,
+        'square': lambda x: x * x,
+        'sum': lambda a, b: a + b,
+        'True': True,
+        'False': False,
+        'nil': None,
+    }, None # Global has no parent
+)
+
 class Eva():
-    def __init__(self, globalEnv=None):
+    def __init__(self, globalEnv=GLOBAL_ENVIRONMENT):
         self.globalEnv = globalEnv
         self.parser = Parser()
         self.transformer = Transformer()
@@ -23,7 +34,8 @@ class Eva():
         globalEnv = Environment({
             'version': 1.0,
             'square': square,
-            'sum': sum
+            'sum': sum,
+            'nil': None
         }, None);
         return self.eval(ast, globalEnv)
 
@@ -124,6 +136,21 @@ class Eva():
         if exp[0] == 'set':
             [_, name, value] = exp
             return env.assign(name, self.eval(value, env))
+
+        if exp[0] == 'cons':
+            [_, first, second] = exp
+            return [self.eval(first, env), self.eval(second, env)]
+
+        if exp[0] == 'car':
+            [_, pair] = exp
+            [first, second] = self.eval(pair, env)
+            return first
+
+        if exp[0] == 'cdr':
+            [_, pair] = exp
+            [first, second] = self.eval(pair, env)
+            return second
+
 
         # Module (module <moduleName> <exp1> <exp2> ...)
         if exp[0] == 'module':

@@ -45,7 +45,10 @@ class Eva():
             return self.eval(exp[1], env) + self.eval(exp[2], env);
 
         if exp[0] == '-':
-            return self.eval(exp[1], env) - self.eval(exp[2], env);
+            if len(exp) == 2: # unary case, (- 3)
+                return -self.eval(exp[1], env)
+            else:
+                return self.eval(exp[1], env) - self.eval(exp[2], env)
 
         if exp[0] == '*':
             return self.eval(exp[1], env) * self.eval(exp[2], env);
@@ -119,6 +122,30 @@ class Eva():
         if exp[0] == 'set':
             [_, name, value] = exp
             return env.assign(name, self.eval(value, env))
+
+        # Module (module <moduleName> <exp1> <exp2> ...)
+        if exp[0] == 'module':
+            # undefined number of arguments in the expression
+            name = exp[1]
+            moduleEnv = Environment({}, env)
+            for expression in exp[2:]:
+                self.eval(expression, moduleEnv)
+            return env.define(name, moduleEnv)
+
+        if exp[0] == 'prop':
+            [_, instance, name] = exp
+            instanceEnv = self.eval(instance, env)
+            return instanceEnv.lookup(name)
+
+        if exp[0] == 'import':
+            [_, name] = exp
+            f = open("modules/" + name, 'r')
+            file_contents = f.read()
+            eva = Eva()
+            result = eva.evalNew("(module " + name + file_contents + ")")
+            print(result)
+            f.close()
+
 
         # Functions
         if exp[0] == 'lambda':

@@ -3,6 +3,9 @@ class Environment():
         self.record = record
         self.parent = parent
 
+    def __repr__(self):
+        return str({'record': self.record, 'parent': self.parent})
+
     def define(self, name, value):
         self.record[name] = value
         return value
